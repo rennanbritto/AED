@@ -1,5 +1,3 @@
-//Junção de Insert, Merge e Quick para comparar os três Algoritmos
-//Neste mesmo repositório há um código em Python para a criação de gráficios
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> // clock(), CLOCKS_PER_SEC e clock_t
@@ -7,6 +5,7 @@
 #define MAX_N 400000
 #define STEP_N 20000
 
+//função do insertion
 void insertionSort(int arr[], int n) {
     int i, chave, j;
     for (i = 1; i < n; i++) {
@@ -20,7 +19,7 @@ void insertionSort(int arr[], int n) {
     }
 }
 
-// Função auxiliar do Merge
+//função auxiliar para o Mergesort
 void mesclar(int arr[], int esquerda, int meio, int direita) {
     int i, j, k;
     int n1 = meio - esquerda + 1;
@@ -59,7 +58,7 @@ void mesclar(int arr[], int esquerda, int meio, int direita) {
     }
 }
 
-// Função Principal do Merge
+//função principal do MergeSort
 void mergeSort(int arr[], int esquerda, int direita) {
     if (esquerda < direita) {
         int meio = esquerda + (direita - esquerda) / 2;
@@ -71,34 +70,35 @@ void mergeSort(int arr[], int esquerda, int direita) {
     }
 }
 
-// Função auxiliar do Quick
-int separar(int v[], int p, int r) {
-    int pivo = v[r];
-    int i = (p - 1);
-    for (int j = p; j <= r - 1; j++) {
-        if (v[j] < pivo) {
+//função auxiliar do QuickSort
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = (low - 1);
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
             i++;
-            int temp = v[i];
-            v[i] = v[j];
-            v[j] = temp;
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
         }
     }
-    int temp = v[i + 1];
-    v[i + 1] = v[r];
-    v[r] = temp;
+    int temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
     return (i + 1);
 }
 
-// Função Principal do Quick
-void quickSort(int v[], int p, int r) {
-    if (p < r) {
-        int q = separar(v, p, r);
+//função principal do QuickSort
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
 
-        quickSort(v, p, q - 1);
-        quickSort(v, q + 1, r);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
     }
 }
 
+//Abaixo, segue as funções para medição do tempo dos três métodos
 double medirTempoInsertionSort(int arr[], int n) {
     clock_t t;
     t = clock();
@@ -115,10 +115,10 @@ double medirTempoMergeSort(int arr[], int esquerda, int direita) {
     return ((double)t) / ((CLOCKS_PER_SEC / 1000));
 }
 
-double medirTempoQuickSort(int v[], int p, int r) {
+double medirTempoQuickSort(int arr[], int low, int high) {
     clock_t t;
     t = clock();
-    quickSort(v, p, r);
+    quickSort(arr, low, high);
     t = clock() - t;
     return ((double)t) / ((CLOCKS_PER_SEC / 1000));
 }
@@ -126,6 +126,7 @@ double medirTempoQuickSort(int v[], int p, int r) {
 int main() {
     int n, i, j;
 
+    //baseado no código disponibilizado no classroom
     srand((unsigned)time(NULL));
 
     for (n = STEP_N; n <= MAX_N; n += STEP_N) {
@@ -153,6 +154,7 @@ int main() {
             free(arr3);
         }
 
+        //média do tempo a partir de três rodagens
         double mediaTempoInsertionSort = somaTempoInsertionSort / 3.0;
         double mediaTempoMergeSort = somaTempoMergeSort / 3.0;
         double mediaTempoQuickSort = somaTempoQuickSort / 3.0;
